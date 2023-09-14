@@ -1,12 +1,14 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:bloc_example/cubits/login_cubit.dart';
 import 'package:bloc_example/cubits/login_state.dart';
-import 'package:bloc_example/view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/signIn/bloc/sign_in_bloc.dart';
 import '../bloc/signIn/bloc/sign_in_event.dart';
 import '../bloc/signIn/bloc/sign_in_state.dart';
+import 'home.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -22,14 +24,78 @@ class LoginScreen extends StatelessWidget {
         listener: (context, state) {
           print("listen state ;;;;> $state");
           if (state is SignInLoadingState) {
-            print("I am loading");
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Center(child: Text("Error", textAlign: TextAlign.center)),
+                  actions: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          child: Text("Retry"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    )
+                  ],
+                );
+              },
+            );
           }
           if (state is SignInErrorState) {
-            print("I am Eror");
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Center(child: Text("Error", textAlign: TextAlign.center)),
+                  actions: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          child: Text("Retry"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    )
+                  ],
+                );
+              },
+            );
           }
           if (state is SignInSuccessState) {
-            print("I am Success:::::");
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Center(child: Text("Success", textAlign: TextAlign.center)),
+                  actions: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                            child: const Text("Cancel"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+                          },
+                          child: Text("Confirm"),
+                        ),
+                      ],
+                    )
+                  ],
+                );
+              },
+            );
           }
         },
         child: Column(children: [
@@ -54,7 +120,6 @@ class LoginScreen extends StatelessWidget {
               context.read<SignInBloc>().add(SignInSubmittedEvent());
             },
           )
-          
         ]),
       ),
     );
